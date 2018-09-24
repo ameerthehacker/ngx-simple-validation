@@ -1,10 +1,9 @@
 import { NgModule } from '@angular/core';
-import { NgxSimpleValidationComponent } from './ngx-simple-validation.component';
+import { ValidationDirective } from './directives/validation/validation.directive';
 
 @NgModule({
-  imports: [
-  ],
-  declarations: [NgxSimpleValidationComponent],
-  exports: [NgxSimpleValidationComponent]
+  imports: [],
+  declarations: [ValidationDirective],
+  exports: [ValidationDirective]
 })
-export class NgxSimpleValidationModule { }
+export class NgxSimpleValidationModule {}
