@@ -4,41 +4,41 @@ import { NG_VALIDATORS, Validator, ValidationErrors, Validators, AbstractControl
 import { ValidationErrorService } from '../../services/validation-error/validation-error.service';
 import { formatErrorMessages } from '../../util';
 
-const MAX_VALIDATOR = {
+const MIN_LENGTH_VALIDATOR = {
   provide: NG_VALIDATORS,
-  useExisting: forwardRef(() => MaxDirective),
+  useExisting: forwardRef(() => MaxLengthDirective),
   multi: true
 }
 
 @Directive({
-  selector: '[formControlName][svMax]',
-  providers: [MAX_VALIDATOR, ValidationErrorService]
+  selector: '[formControlName][svMaxLength]',
+  providers: [MIN_LENGTH_VALIDATOR, ValidationErrorService]
 })
-export class MaxDirective implements Validator, OnChanges {
-  @Input('svMax')
-  option: string | any;
+export class MaxLengthDirective implements Validator, OnChanges {
+  @Input('svMaxLength')
+  option: any;
   errorMessage: string;
-  max: number;
-  defaultErrorMessage: string = 'This should be less than or equal to {0}';
+  minLength: number;
+  defaultErrorMessage: string = 'This should have atmost {0} characters';
   onChange: () => {};
 
   constructor(private elementRef: ElementRef, private validationErrorService: ValidationErrorService) { }
 
   public validate(formControl: AbstractControl): ValidationErrors | null {
     if(this.option == undefined) {
-      throw new Error('provide maximum value for the validator')
+      throw new Error('provide maximum length value for the validator')
     }
     if(typeof(this.option) == 'object') {
-      this.max = parseInt(this.option.value);
+      this.minLength = parseInt(this.option.value);
       this.errorMessage = this.option.message;
     }
     else {
-      this.max = parseInt(this.option);      
+      this.minLength = parseInt(this.option);      
     }
 
-    const errorMessage = formatErrorMessages((this.errorMessage || this.defaultErrorMessage), [this.max.toString()]);
+    const errorMessage = formatErrorMessages((this.errorMessage || this.defaultErrorMessage), [this.minLength.toString()]);
 
-    return this.validationErrorService.validate(this.elementRef.nativeElement, formControl, Validators.max(this.max), errorMessage);
+    return this.validationErrorService.validate(this.elementRef.nativeElement, formControl, Validators.maxLength(this.minLength), errorMessage);
   }
 
   ngOnChanges(changes: SimpleChanges) {

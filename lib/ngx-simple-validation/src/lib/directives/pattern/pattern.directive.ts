@@ -4,41 +4,41 @@ import { NG_VALIDATORS, Validator, ValidationErrors, Validators, AbstractControl
 import { ValidationErrorService } from '../../services/validation-error/validation-error.service';
 import { formatErrorMessages } from '../../util';
 
-const MAX_VALIDATOR = {
+const PATTERN_VALIDATOR = {
   provide: NG_VALIDATORS,
-  useExisting: forwardRef(() => MaxDirective),
+  useExisting: forwardRef(() => PatternDirective),
   multi: true
 }
 
 @Directive({
-  selector: '[formControlName][svMax]',
-  providers: [MAX_VALIDATOR, ValidationErrorService]
+  selector: '[formControlName][svPattern]',
+  providers: [PATTERN_VALIDATOR, ValidationErrorService]
 })
-export class MaxDirective implements Validator, OnChanges {
-  @Input('svMax')
-  option: string | any;
+export class PatternDirective implements Validator, OnChanges {
+  @Input('svPattern')
+  option: any;
   errorMessage: string;
-  max: number;
-  defaultErrorMessage: string = 'This should be less than or equal to {0}';
+  patten: string;
+  defaultErrorMessage: string = 'This does not match the format';
   onChange: () => {};
 
   constructor(private elementRef: ElementRef, private validationErrorService: ValidationErrorService) { }
 
   public validate(formControl: AbstractControl): ValidationErrors | null {
     if(this.option == undefined) {
-      throw new Error('provide maximum value for the validator')
+      throw new Error('provide pattern for the validator')
     }
     if(typeof(this.option) == 'object') {
-      this.max = parseInt(this.option.value);
+      this.patten = this.option.value;
       this.errorMessage = this.option.message;
     }
     else {
-      this.max = parseInt(this.option);      
+      this.patten = this.option;
     }
 
-    const errorMessage = formatErrorMessages((this.errorMessage || this.defaultErrorMessage), [this.max.toString()]);
+    const errorMessage = formatErrorMessages((this.errorMessage || this.defaultErrorMessage), [this.patten.toString()]);
 
-    return this.validationErrorService.validate(this.elementRef.nativeElement, formControl, Validators.max(this.max), errorMessage);
+    return this.validationErrorService.validate(this.elementRef.nativeElement, formControl, Validators.pattern(this.patten), errorMessage);
   }
 
   ngOnChanges(changes: SimpleChanges) {

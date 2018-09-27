@@ -28,7 +28,6 @@ export class RequiredDirective implements Validator, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     for(let key in changes) {
       if(key === 'errorMessage') {
-        console.log(this.errorMessage)
         this.onChange && this.onChange();
       }
     }
