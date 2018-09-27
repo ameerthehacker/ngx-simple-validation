@@ -5,21 +5,28 @@ import { ValidationErrors, ValidatorFn, AbstractControl } from '@angular/forms';
 
 export class ValidationErrorService {
   errorStyleService: IErrorStyle;
+  lastErrorMessage: string;
 
   constructor(@Inject(VALIDATION_ERROR_STYLE) errorStyleService) { 
     this.errorStyleService = errorStyleService;
   }
 
-  public validate(element: HTMLElement, formControl: AbstractControl, validator: ValidatorFn, message: string): ValidationErrors | null {
+  public validate(element: HTMLElement, formControl: AbstractControl, validator: ValidatorFn, errorMessage: string): ValidationErrors | null {
     const validationResult = validator.apply(this, [formControl]);
 
     if(validationResult) {
-      this.errorStyleService.showError(element, message);
-    }
-    else {
-      this.errorStyleService.removeError(element);
+      this.lastErrorMessage = errorMessage;
     }
 
+    formControl.valueChanges.subscribe(value => {
+      if(formControl.invalid) {
+        this.errorStyleService.showError(element, this.lastErrorMessage);
+      }
+      else {
+        this.errorStyleService.removeError(element);
+      }
+    });
+   
     return validationResult;
   }
 }
