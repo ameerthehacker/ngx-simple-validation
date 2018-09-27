@@ -1,10 +1,12 @@
 import { NgModule } from '@angular/core';
-import { NgxSimpleValidationComponent } from './ngx-simple-validation.component';
+import { RequiredDirective } from './directives/required/required.directive';
+import { BasicErrorStyle } from './implementation/basic_error_style';
 
 @NgModule({
   imports: [
   ],
-  declarations: [NgxSimpleValidationComponent],
-  exports: [NgxSimpleValidationComponent]
+  providers: [BasicErrorStyle],
+  declarations: [RequiredDirective],
+  exports: [RequiredDirective]
 })
 export class NgxSimpleValidationModule { }

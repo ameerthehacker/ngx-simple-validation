@@ -2,6 +2,7 @@
  * Public API Surface of ngx-simple-validation
  */
 
-export * from './lib/ngx-simple-validation.service';
-export * from './lib/ngx-simple-validation.component';
 export * from './lib/ngx-simple-validation.module';
+export * from './lib/contract/error-style';
+export * from './lib/contract/error-style_injector';
+export * from './lib/implementation/basic_error_style';
