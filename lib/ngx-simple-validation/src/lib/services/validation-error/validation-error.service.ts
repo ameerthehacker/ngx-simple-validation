@@ -1,5 +1,5 @@
 import { Inject } from '@angular/core';
-import { VALIDATION_ERROR_STYLE } from '../../contract/error-style_injector';
+import { VALIDATION_ERROR_STYLE } from '../../contract/error-style-injector';
 import { IErrorStyle } from '../../contract/error-style';
 import { ValidationErrors, ValidatorFn, AbstractControl } from '@angular/forms';
 

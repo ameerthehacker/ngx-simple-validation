@@ -6,7 +6,7 @@ import { ValidationErrorService } from "../validation-error/validation-error.ser
 import { IValidatorOption } from "../../contract/validator-option";
 import { IValidationOption } from "../../contract/validation-option";
 
-import { formatErrorMessages } from "../../util";
+import { formatErrorMessage } from "../../util";
 
 export class ValidatorFactoryService {
   public static create(validatorOptions: IValidatorOption) {
@@ -31,8 +31,13 @@ export class ValidatorFactoryService {
         let errorMessage: string, args: string | string [], validatorFn: ValidatorFn = validatorOptions.validatorFn;
 
         if(this.option != undefined) {
-          errorMessage = this.option.message;
-          args = this.option.args;
+          if(typeof(this.option) === 'object') {
+            errorMessage = this.option.message;
+            args = this.option.args;
+          }
+          else {
+            args = this.option;
+          }
         }
         if(args != null) {
           if(Array.isArray(args)) {
@@ -42,9 +47,12 @@ export class ValidatorFactoryService {
             validatorFn = validatorOptions.validatorFn.apply(this, [args]);
           }
         }
+        else {
+          validatorFn = validatorOptions.validatorFn.apply(this);
+        }
 
         let argsArray: string[] = Array.isArray(args)? args: [args];
-        let formattedErrorMessage = formatErrorMessages(errorMessage || validatorOptions.defaultErrorMessage, argsArray);
+        let formattedErrorMessage = formatErrorMessage(errorMessage || validatorOptions.defaultErrorMessage, argsArray);
 
         return this.validationErrorService.validate(this.elementRef.nativeElement, formControl, validatorFn, formattedErrorMessage);
       }
