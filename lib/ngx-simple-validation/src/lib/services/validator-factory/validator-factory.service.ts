@@ -4,7 +4,9 @@ import {
   forwardRef,
   Input,
   ElementRef,
-  SimpleChanges
+  SimpleChanges,
+  Inject,
+  Optional
 } from '@angular/core';
 import {
   Validator,
@@ -17,9 +19,11 @@ import {
 } from '@angular/forms';
 
 import { ValidationErrorService } from '../validation-error/validation-error.service';
+import { VALIDATION_ERROR_MESSAGES } from '../../contract/error-message-injector';
 
 import { IValidatorOption } from '../../contract/validator-option';
 import { IValidationOption } from '../../contract/validation-option';
+import { IErrorMessage } from '../../contract/error-message';
 
 import { formatErrorMessage } from '../../util';
 import { Observable } from 'rxjs';
@@ -85,15 +89,27 @@ export class ValidatorFactoryService {
       @Input(validatorOptions.selector)
       option: IValidationOption;
       onChange: () => {};
+      errorMessages: IErrorMessage;
 
       constructor(
+        @Inject(VALIDATION_ERROR_MESSAGES)
+        @Optional()
+        errorMessages,
         private elementRef: ElementRef,
         private validationErrorService: ValidationErrorService
-      ) {}
+      ) {
+        this.errorMessages = errorMessages;
+      }
 
       public validate(
         formControl: AbstractControl
       ): Promise<ValidationErrors> | Observable<ValidationErrors> {
+        if (this.errorMessages) {
+          validatorOptions.defaultErrorMessage =
+            this.errorMessages.messages[validatorOptions.selector] ||
+            validatorOptions.defaultErrorMessage;
+        }
+
         return validate(
           formControl,
           this.elementRef,
@@ -131,13 +147,25 @@ export class ValidatorFactoryService {
       @Input(validatorOptions.selector)
       option: IValidationOption;
       onChange: () => {};
+      errorMessages: IErrorMessage;
 
       constructor(
+        @Inject(VALIDATION_ERROR_MESSAGES)
+        @Optional()
+        errorMessages,
         private elementRef: ElementRef,
         private validationErrorService: ValidationErrorService
-      ) {}
+      ) {
+        this.errorMessages = errorMessages;
+      }
 
       public validate(formControl: AbstractControl): ValidationErrors | null {
+        if (this.errorMessages) {
+          validatorOptions.defaultErrorMessage =
+            this.errorMessages.messages[validatorOptions.selector] ||
+            validatorOptions.defaultErrorMessage;
+        }
+
         return validate(
           formControl,
           this.elementRef,
