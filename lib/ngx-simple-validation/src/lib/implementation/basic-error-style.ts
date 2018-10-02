@@ -3,7 +3,7 @@ import { IErrorElementStyle } from "../contract/error-element-style";
 import { Self } from "@angular/core";
 
 export class BasicErrorStyle implements IErrorStyle {
-  private static errorElementStyle: IErrorElementStyle;
+  private static errorElementStyle: IErrorElementStyle = null;
   private static counter: number = 0;
 
   constructor() { }
