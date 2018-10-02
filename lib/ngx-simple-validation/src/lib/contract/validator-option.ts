@@ -1,8 +1,9 @@
-import { ValidatorFn } from "@angular/forms";
+import { ValidatorFn, AsyncValidatorFn } from "@angular/forms";
 
 export interface IValidatorOption {
+  async?: boolean;
   selector: string;
-  validatorFn(any): ValidatorFn;
+  validatorFn(any): ValidatorFn | AsyncValidatorFn;
   defaultErrorMessage: string;
 }
 

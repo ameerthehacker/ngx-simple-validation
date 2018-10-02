@@ -1,7 +1,9 @@
 import { Inject } from '@angular/core';
 import { VALIDATION_ERROR_STYLE } from '../../contract/error-style-injector';
 import { IErrorStyle } from '../../contract/error-style';
-import { ValidationErrors, ValidatorFn, AbstractControl } from '@angular/forms';
+import { ValidationErrors, ValidatorFn, AbstractControl, AsyncValidatorFn } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { isFunction } from 'util';
 
 export class ValidationErrorService {
   errorStyleService: IErrorStyle;
@@ -11,22 +13,53 @@ export class ValidationErrorService {
     this.errorStyleService = errorStyleService;
   }
 
-  public validate(element: HTMLElement, formControl: AbstractControl, validator: ValidatorFn, errorMessage: string): ValidationErrors | null {
-    const validationResult = validator.apply(this, [formControl]);
+  public validate(element: HTMLElement, formControl: AbstractControl, validator: ValidatorFn | AsyncValidatorFn, errorMessage: string, async: boolean = false): Promise<ValidationErrors> | Observable<ValidationErrors> {
+    if(async) {
+      return new Promise(resolve => {
+        const fn = validator.apply(this, [formControl]);
 
-    if(validationResult) {
-      this.lastErrorMessage = errorMessage;
+        if(isFunction(fn.subscribe)) {
+          fn.subscribe((validationResult) => {
+            if(validationResult) {
+              this.errorStyleService.showError(element, errorMessage);
+            }
+            else if(formControl.valid) {
+              this.errorStyleService.removeError(element);
+            }
+            resolve(validationResult);
+          });
+        }
+        else if(isFunction(fn.then)) {
+          fn.then((validationResult) => {
+            if(validationResult) {
+              this.errorStyleService.showError(element, errorMessage);
+            }
+            else if(formControl.valid) {
+              this.errorStyleService.removeError(element);
+            }
+            resolve(validationResult);
+          });
+        }
+      });
     }
+    else {
+      const validationResult = validator.apply(this, [formControl]);
 
-    formControl.valueChanges.subscribe(value => {
-      if(formControl.invalid) {
-        this.errorStyleService.showError(element, this.lastErrorMessage);
+      if(validationResult) {
+        this.lastErrorMessage = errorMessage;
       }
-      else {
-        this.errorStyleService.removeError(element);
-      }
-    });
-   
-    return validationResult;
+  
+      formControl.valueChanges.subscribe(value => {
+        if(formControl.invalid) {
+          this.errorStyleService.showError(element, this.lastErrorMessage);
+        }
+        else {
+          this.errorStyleService.removeError(element);
+        }
+      });
+     
+      return validationResult;
+    }
+    
   }
 }
