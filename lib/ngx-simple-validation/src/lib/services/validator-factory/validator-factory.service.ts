@@ -1,42 +1,72 @@
-import { Directive, OnChanges, forwardRef, Input, ElementRef, SimpleChanges } from "@angular/core";
-import { Validator, NG_VALIDATORS, AbstractControl, ValidationErrors, ValidatorFn, NG_ASYNC_VALIDATORS, AsyncValidator } from "@angular/forms";
+import {
+  Directive,
+  OnChanges,
+  forwardRef,
+  Input,
+  ElementRef,
+  SimpleChanges
+} from '@angular/core';
+import {
+  Validator,
+  NG_VALIDATORS,
+  AbstractControl,
+  ValidationErrors,
+  ValidatorFn,
+  NG_ASYNC_VALIDATORS,
+  AsyncValidator
+} from '@angular/forms';
 
-import { ValidationErrorService } from "../validation-error/validation-error.service";
+import { ValidationErrorService } from '../validation-error/validation-error.service';
 
-import { IValidatorOption } from "../../contract/validator-option";
-import { IValidationOption } from "../../contract/validation-option";
+import { IValidatorOption } from '../../contract/validator-option';
+import { IValidationOption } from '../../contract/validation-option';
 
-import { formatErrorMessage } from "../../util";
-import { Observable } from "rxjs";
+import { formatErrorMessage } from '../../util';
+import { Observable } from 'rxjs';
 
-function validate(formControl: AbstractControl, elementRef: ElementRef, option: IValidationOption, validatorOptions: IValidatorOption, validationErrorService: ValidationErrorService, async: boolean = false) {
-  let errorMessage: string, args: string | string [], validatorFn: ValidatorFn = validatorOptions.validatorFn;
+function validate(
+  formControl: AbstractControl,
+  elementRef: ElementRef,
+  option: IValidationOption,
+  validatorOptions: IValidatorOption,
+  validationErrorService: ValidationErrorService,
+  async: boolean = false
+) {
+  let errorMessage: string,
+    args: string | string[],
+    validatorFn: ValidatorFn = validatorOptions.validatorFn;
 
-  if(option != undefined) {
-    if(typeof(option) === 'object') {
+  if (option != undefined) {
+    if (typeof option === 'object') {
       errorMessage = this.option.message;
       args = this.option.args;
-    }
-    else {
+    } else {
       args = option;
     }
   }
-  if(args != null) {
-    if(Array.isArray(args)) {
+  if (args != null) {
+    if (Array.isArray(args)) {
       validatorFn = validatorOptions.validatorFn.apply(this, args);
-    }
-    else {
+    } else {
       validatorFn = validatorOptions.validatorFn.apply(this, [args]);
     }
-  }
-  else {
+  } else {
     validatorFn = validatorOptions.validatorFn.apply(this);
   }
 
-  let argsArray: string[] = Array.isArray(args)? args: [args];
-  let formattedErrorMessage = formatErrorMessage(errorMessage || validatorOptions.defaultErrorMessage, argsArray);
+  let argsArray: string[] = Array.isArray(args) ? args : [args];
+  let formattedErrorMessage = formatErrorMessage(
+    errorMessage || validatorOptions.defaultErrorMessage,
+    argsArray
+  );
 
-  return validationErrorService.validate(elementRef.nativeElement, formControl, validatorFn, formattedErrorMessage, async);
+  return validationErrorService.validate(
+    elementRef.nativeElement,
+    formControl,
+    validatorFn,
+    formattedErrorMessage,
+    async
+  );
 }
 
 export class ValidatorFactoryService {
@@ -56,15 +86,27 @@ export class ValidatorFactoryService {
       option: IValidationOption;
       onChange: () => {};
 
-      constructor(private elementRef: ElementRef, private validationErrorService: ValidationErrorService) { }
+      constructor(
+        private elementRef: ElementRef,
+        private validationErrorService: ValidationErrorService
+      ) {}
 
-      public validate(formControl: AbstractControl): Promise<ValidationErrors> | Observable<ValidationErrors> {
-        return validate(formControl, this.elementRef, this.option, validatorOptions, this.validationErrorService, true);
+      public validate(
+        formControl: AbstractControl
+      ): Promise<ValidationErrors> | Observable<ValidationErrors> {
+        return validate(
+          formControl,
+          this.elementRef,
+          this.option,
+          validatorOptions,
+          this.validationErrorService,
+          true
+        );
       }
 
       ngOnChanges(changes: SimpleChanges) {
-        for(let key in changes) {
-          if(key === 'option') {
+        for (let key in changes) {
+          if (key === 'option') {
             this.onChange && this.onChange();
           }
         }
@@ -90,15 +132,25 @@ export class ValidatorFactoryService {
       option: IValidationOption;
       onChange: () => {};
 
-      constructor(private elementRef: ElementRef, private validationErrorService: ValidationErrorService) { }
+      constructor(
+        private elementRef: ElementRef,
+        private validationErrorService: ValidationErrorService
+      ) {}
 
       public validate(formControl: AbstractControl): ValidationErrors | null {
-        return validate(formControl, this.elementRef, this.option, validatorOptions, this.validationErrorService, false);
+        return validate(
+          formControl,
+          this.elementRef,
+          this.option,
+          validatorOptions,
+          this.validationErrorService,
+          false
+        );
       }
 
       ngOnChanges(changes: SimpleChanges) {
-        for(let key in changes) {
-          if(key === 'option') {
+        for (let key in changes) {
+          if (key === 'option') {
             this.onChange && this.onChange();
           }
         }
@@ -109,10 +161,9 @@ export class ValidatorFactoryService {
       }
     }
 
-    if(validatorOptions.async) {
+    if (validatorOptions.async) {
       return AsyncValidatorDirective;
-    }
-    else {
+    } else {
       return ValidatorDirective;
     }
   }

@@ -1,25 +1,26 @@
 import { NgModule } from '@angular/core';
 import { BasicErrorStyle } from './implementation/basic-error-style';
-import { 
-  RequiredValidator, 
-  MaxValidator, 
-  MinValidator, 
-  MinLengthValidator, 
+import {
+  RequiredValidator,
+  MaxValidator,
+  MinValidator,
+  MinLengthValidator,
   MaxLengthValidator,
-  PatternValidator, 
-  RequiredTrueValidator, 
-  NullValidator, 
-  EmailValidator } from './validators/validators';
+  PatternValidator,
+  RequiredTrueValidator,
+  NullValidator,
+  EmailValidator
+} from './validators/validators';
 
 const validators = [
-  RequiredValidator, 
-  MaxValidator, 
-  MinValidator, 
-  MaxLengthValidator, 
-  MinLengthValidator, 
-  PatternValidator, 
-  RequiredTrueValidator, 
-  NullValidator, 
+  RequiredValidator,
+  MaxValidator,
+  MinValidator,
+  MaxLengthValidator,
+  MinLengthValidator,
+  PatternValidator,
+  RequiredTrueValidator,
+  NullValidator,
   EmailValidator
 ];
 
@@ -28,4 +29,4 @@ const validators = [
   declarations: validators,
   exports: validators
 })
-export class NgxSimpleValidationModule { }
+export class NgxSimpleValidationModule {}

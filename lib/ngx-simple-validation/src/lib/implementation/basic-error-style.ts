@@ -1,12 +1,12 @@
-import { IErrorStyle } from "../contract/error-style";
-import { IErrorElementStyle } from "../contract/error-element-style";
-import { Self } from "@angular/core";
+import { IErrorStyle } from '../contract/error-style';
+import { IErrorElementStyle } from '../contract/error-element-style';
+import { Self } from '@angular/core';
 
 export class BasicErrorStyle implements IErrorStyle {
   private static errorElementStyle: IErrorElementStyle = null;
   private static counter: number = 0;
 
-  constructor() { }
+  constructor() {}
 
   public static configure(errorElementStyle: IErrorElementStyle): Self {
     BasicErrorStyle.errorElementStyle = errorElementStyle;
@@ -17,17 +17,15 @@ export class BasicErrorStyle implements IErrorStyle {
   public showError(element: HTMLElement, errorMessage: string) {
     const errorElementId = element.getAttribute('error-element-id');
 
-    if(errorElementId) {
+    if (errorElementId) {
       const errorElement = document.getElementById(errorElementId);
 
-      if(errorElement) {
+      if (errorElement) {
         errorElement.innerHTML = errorMessage;
-      }
-      else {
+      } else {
         this.createErrorElement(element, errorMessage, errorElementId);
       }
-    }
-    else {
+    } else {
       this.createErrorElement(element, errorMessage);
     }
   }
@@ -35,25 +33,32 @@ export class BasicErrorStyle implements IErrorStyle {
   public removeError(element: HTMLElement) {
     const errorElementId = element.getAttribute('error-element-id');
 
-    if(errorElementId) {
+    if (errorElementId) {
       const errorElement = document.getElementById(errorElementId);
 
-      if(errorElement) {
+      if (errorElement) {
         errorElement.remove();
       }
     }
   }
 
-  private createErrorElement(element: HTMLElement, errorMessage: string, oldErrorElementId: string = undefined) {
-    const errorElement = document.createElement(BasicErrorStyle.errorElementStyle.element);
-    const errorElementId = oldErrorElementId || `error-field-${BasicErrorStyle.counter++}`;
+  private createErrorElement(
+    element: HTMLElement,
+    errorMessage: string,
+    oldErrorElementId: string = undefined
+  ) {
+    const errorElement = document.createElement(
+      BasicErrorStyle.errorElementStyle.element
+    );
+    const errorElementId =
+      oldErrorElementId || `error-field-${BasicErrorStyle.counter++}`;
 
     errorElement.className = BasicErrorStyle.errorElementStyle.className;
     errorElement.innerHTML = errorMessage;
     errorElement.id = errorElementId;
     element.setAttribute('error-element-id', errorElementId);
 
-    for(let key in BasicErrorStyle.errorElementStyle.style) {
+    for (let key in BasicErrorStyle.errorElementStyle.style) {
       errorElement.style[key] = BasicErrorStyle.errorElementStyle.style[key];
     }
 

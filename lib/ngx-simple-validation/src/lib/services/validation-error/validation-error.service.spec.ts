@@ -9,7 +9,10 @@ describe('ValidationErrorService', () => {
     });
   });
 
-  it('should be created', inject([ValidationErrorService], (service: ValidationErrorService) => {
-    expect(service).toBeTruthy();
-  }));
+  it('should be created', inject(
+    [ValidationErrorService],
+    (service: ValidationErrorService) => {
+      expect(service).toBeTruthy();
+    }
+  ));
 });

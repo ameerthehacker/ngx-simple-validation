@@ -1,4 +1,4 @@
 export interface IValidationOption {
-  args: string[] | string,
-  message: string
+  args: string[] | string;
+  message: string;
 }
