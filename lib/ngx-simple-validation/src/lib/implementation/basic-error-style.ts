@@ -4,7 +4,7 @@ import { Self } from '@angular/core';
 
 export class BasicErrorStyle implements IErrorStyle {
   private static errorElementStyle: IErrorElementStyle = null;
-  private static counter: number = 0;
+  private static counter = 0;
 
   constructor() {}
 
@@ -45,7 +45,7 @@ export class BasicErrorStyle implements IErrorStyle {
   private createErrorElement(
     element: HTMLElement,
     errorMessage: string,
-    oldErrorElementId: string = undefined
+    oldErrorElementId?: string
   ) {
     const errorElement = document.createElement(
       BasicErrorStyle.errorElementStyle.element
@@ -58,8 +58,10 @@ export class BasicErrorStyle implements IErrorStyle {
     errorElement.id = errorElementId;
     element.setAttribute('error-element-id', errorElementId);
 
-    for (let key in BasicErrorStyle.errorElementStyle.style) {
-      errorElement.style[key] = BasicErrorStyle.errorElementStyle.style[key];
+    for (const key in BasicErrorStyle.errorElementStyle.style) {
+      if (BasicErrorStyle.errorElementStyle.style.hasOwnProperty(key)) {
+        errorElement.style[key] = BasicErrorStyle.errorElementStyle.style[key];
+      }
     }
 
     element.insertAdjacentElement('afterend', errorElement);

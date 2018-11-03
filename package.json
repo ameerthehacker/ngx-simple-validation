@@ -12,7 +12,8 @@
     "build-lib": "ng build ngx-simple-validation",
     "build-lib:prod": "ng build ngx-simple-validation --prod",
     "coverage": "ng test ngx-simple-validation --watch=false --code-coverage",
-    "pretty": "prettier --write"
+    "pretty": "prettier --write",
+    "publish": "npm publish dist/ngx-simple-validation"
   },
   "lint-staged": {
     "*.{ts,tsx}": [

@@ -1,3 +1,4 @@
+/* tslint:disable:no-use-before-declare no-input-rename */
 import {
   Directive,
   OnChanges,
@@ -13,7 +14,6 @@ import {
   NG_VALIDATORS,
   AbstractControl,
   ValidationErrors,
-  ValidatorFn,
   NG_ASYNC_VALIDATORS,
   AsyncValidator
 } from '@angular/forms';
@@ -25,53 +25,9 @@ import { IValidatorOption } from '../../contract/validator-option';
 import { IValidationOption } from '../../contract/validation-option';
 import { IErrorMessage } from '../../contract/error-message';
 
-import { formatErrorMessage } from '../../util';
 import { Observable } from 'rxjs';
 
-function validate(
-  formControl: AbstractControl,
-  elementRef: ElementRef,
-  option: IValidationOption,
-  validatorOptions: IValidatorOption,
-  validationErrorService: ValidationErrorService,
-  async: boolean = false
-) {
-  let errorMessage: string,
-    args: string | string[],
-    validatorFn: ValidatorFn = validatorOptions.validatorFn;
-
-  if (option != undefined) {
-    if (typeof option === 'object') {
-      errorMessage = this.option.message;
-      args = this.option.args;
-    } else {
-      args = option;
-    }
-  }
-  if (args != null) {
-    if (Array.isArray(args)) {
-      validatorFn = validatorOptions.validatorFn.apply(this, args);
-    } else {
-      validatorFn = validatorOptions.validatorFn.apply(this, [args]);
-    }
-  } else {
-    validatorFn = validatorOptions.validatorFn.apply(this);
-  }
-
-  let argsArray: string[] = Array.isArray(args) ? args : [args];
-  let formattedErrorMessage = formatErrorMessage(
-    errorMessage || validatorOptions.defaultErrorMessage,
-    argsArray
-  );
-
-  return validationErrorService.validate(
-    elementRef.nativeElement,
-    formControl,
-    validatorFn,
-    formattedErrorMessage,
-    async
-  );
-}
+import { Util } from '../../util/util';
 
 export class ValidatorFactoryService {
   public static create(validatorOptions: IValidatorOption) {
@@ -110,7 +66,7 @@ export class ValidatorFactoryService {
             validatorOptions.defaultErrorMessage;
         }
 
-        return validate(
+        return Util.validate(
           formControl,
           this.elementRef,
           this.option,
@@ -121,9 +77,11 @@ export class ValidatorFactoryService {
       }
 
       ngOnChanges(changes: SimpleChanges) {
-        for (let key in changes) {
+        for (const key in changes) {
           if (key === 'option') {
-            this.onChange && this.onChange();
+            if (this.onChange !== undefined) {
+              this.onChange();
+            }
           }
         }
       }
@@ -166,7 +124,7 @@ export class ValidatorFactoryService {
             validatorOptions.defaultErrorMessage;
         }
 
-        return validate(
+        return Util.validate(
           formControl,
           this.elementRef,
           this.option,
@@ -177,9 +135,11 @@ export class ValidatorFactoryService {
       }
 
       ngOnChanges(changes: SimpleChanges) {
-        for (let key in changes) {
+        for (const key in changes) {
           if (key === 'option') {
-            this.onChange && this.onChange();
+            if (this.onChange !== undefined) {
+              this.onChange();
+            }
           }
         }
       }
